@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self'; connect-src 'self' https://api.github.com; base-uri 'self'; form-action 'none'; object-src 'none'">
+<title>Mihir — Portfolio</title>
+<meta name="description" content="Mihir — building robots, ML models, and embedded systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── reset ────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { cursor: none; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+a, button { cursor: none; }
+img { display: block; }
+
+/* ── tokens ───────────────────────────────── */
+:root {
+  --cream:  #F0EBE1;
+  --ink:    #18160F;
+  --rust:   #C94E14;
+  --muted:  #7A7060;
+  --line:   rgba(24,22,15,.13);
+  --serif:  'Cormorant Garamond', Georgia, serif;
+  --sans:   'DM Sans', system-ui, sans-serif;
+  --mono:   'DM Mono', ui-monospace, monospace;
+}
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── custom cursor ────────────────────────── */
+#cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--ink);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .12s cubic-bezier(.16,1,.3,1),
+              height .12s cubic-bezier(.16,1,.3,1),
+              background .12s ease,
+              opacity .12s ease;
+  mix-blend-mode: multiply;
+}
+#cursor.hover {
+  width: 44px; height: 44px;
+  background: transparent;
+  border: 1.5px solid var(--ink);
+}
+#cursor.hover-img {
+  opacity: 0;
+}
+
+/* ── layout helpers ───────────────────────── */
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+}
+
+/* ── nav ──────────────────────────────────── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--cream);
+  backdrop-filter: blur(6px);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+}
+.nav-brand {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-decoration: none;
+  color: var(--ink);
+}
+.nav-right {
+  display: flex; align-items: center; gap: 2rem;
+}
+.nav-status {
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .06em;
+  color: var(--cream);
+  background: var(--rust);
+  padding: .3rem .65rem;
+  border-radius: 999px;
+}
+.nav-links {
+  display: flex; gap: 1.75rem; list-style: none;
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav-links a:hover { color: var(--ink); }
+
+/* ── hero ─────────────────────────────────── */
+.hero {
+  padding: clamp(4rem, 10vw, 7rem) 0 clamp(2.5rem, 5vw, 4rem);
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: .75rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: .65rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 28px; height: 1px;
+  background: var(--muted);
+}
+.hero-title {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(5.5rem, 16vw, 14rem);
+  line-height: .92;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  margin-bottom: .15em;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--rust);
+}
+.hero-subtitle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid var(--line);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.hero-bio {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 38ch;
+  line-height: 1.65;
+}
+.hero-bio strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--mono);
+  font-size: .8rem;
+  letter-spacing: .04em;
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  padding: .85rem 1.5rem;
+  border-radius: 999px;
+  transition: background .2s, color .2s;
+  white-space: nowrap;
+}
+.hero-cta:hover { background: var(--ink); color: var(--cream); }
+
+/* ── marquee ──────────────────────────────── */
+.marquee-wrap {
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: .9rem 0;
+  margin: clamp(2rem, 4vw, 3rem) 0;
+}
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: marquee 24s linear infinite;
+}
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-item {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.marquee-item span {
+  color: var(--rust);
+  margin-left: 3rem;
+}
+
+/* ── projects ─────────────────────────────── */
+.projects-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.projects-label {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.projects-count {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--muted);
+}
+
+.project-row {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: clamp(1.4rem, 2.5vw, 2rem) 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: background .2s;
+}
+.project-row::after {
+  content: '';
+  position: absolute;
+  inset: 0 -4rem;
+  background: var(--ink);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity .2s;
+}
+.project-row:hover::after { opacity: 1; }
+.project-row:hover .proj-num,
+.project-row:hover .proj-title,
+.project-row:hover .proj-desc,
+.project-row:hover .proj-tag,
+.project-row:hover .proj-arrow { color: var(--cream); }
+.project-row:hover .proj-tag { background: rgba(255,255,255,.12); color: var(--cream); }
+
+.proj-num {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--muted);
+  letter-spacing: .04em;
+  padding-top: .2rem;
+  transition: color .2s;
+}
+.proj-content { min-width: 0; }
+.proj-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  letter-spacing: -.01em;
+  line-height: 1.1;
+  margin-bottom: .4rem;
+  transition: color .2s;
+}
+.proj-desc {
+  font-size: .88rem;
+  color: var(--muted);
+  max-width: 52ch;
+  margin-bottom: .6rem;
+  transition: color .2s;
+}
+.proj-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--rust);
+  border: 1px solid currentColor;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  transition: color .2s, background .2s, border-color .2s;
+}
+.project-row:hover .proj-tag { border-color: transparent; }
+.proj-arrow {
+  font-size: 1.2rem;
+  color: var(--muted);
+  transition: color .2s, transform .2s;
+  flex-shrink: 0;
+}
+.project-row:hover .proj-arrow { transform: translate(4px, -4px); }
+
+/* ── floating image tooltip ───────────────── */
+#proj-thumb {
+  position: fixed;
+  top: 0; left: 0;
+  width: 260px;
+  border-radius: 10px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.9) rotate(-2deg);
+  transition: opacity .22s ease, transform .22s ease;
+  box-shadow: 0 24px 48px -12px rgba(24,22,15,.35);
+}
+#proj-thumb.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1) rotate(-1deg);
+}
+#proj-thumb img { width: 100%; display: block; }
+
+/* ── stack strip ──────────────────────────── */
+.stack {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-top: 1px solid var(--line);
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+.stack-label {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.75rem;
+}
+.stack-pills {
+  display: flex; flex-wrap: wrap; gap: .65rem;
+}
+.pill {
+  font-family: var(--mono);
+  font-size: .78rem;
+  letter-spacing: .02em;
+  padding: .5rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  transition: background .15s, border-color .15s;
+}
+.pill:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+/* ── github languages ─────────────────────── */
+.github-lang {
+  padding: 0 0 clamp(3rem, 6vw, 5rem);
+  border-top: 1px solid var(--line);
+}
+.github-lang-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.github-lang-list {
+  padding-top: .25rem;
+}
+.github-lang-row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 7rem) 1fr 2.75rem;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  padding: .85rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.github-lang-name {
+  font-family: var(--mono);
+  font-size: .78rem;
+  letter-spacing: .02em;
+  color: var(--ink);
+}
+.github-lang-bar {
+  height: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+.github-lang-bar span {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .9s cubic-bezier(.16, 1, .3, 1);
+}
+.github-lang-row.in .github-lang-bar span {
+  transform: scaleX(var(--lang-frac, 1));
+}
+.github-lang-row:first-child .github-lang-bar span { background: var(--rust); }
+.github-lang-pct {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--muted);
+  text-align: right;
+  letter-spacing: .04em;
+}
+.github-lang-status {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--muted);
+  padding: 1.25rem 0;
+}
+.github-lang-link {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .15s;
+}
+.github-lang-link:hover { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) {
+  .github-lang-bar span { transition: none; }
+  .github-lang-row .github-lang-bar span { transform: scaleX(var(--lang-frac, 1)); }
+}
+
+/* ── contact ──────────────────────────────── */
+.contact {
+  padding: clamp(4rem, 8vw, 7rem) 0 clamp(3rem, 6vw, 5rem);
+  border-top: 1px solid var(--line);
+}
+.contact-giant {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(4rem, 11vw, 9.5rem);
+  line-height: .95;
+  letter-spacing: -.025em;
+  margin-bottom: 2rem;
+}
+.contact-giant em { font-style: italic; color: var(--rust); }
+.contact-links {
+  display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;
+}
+.contact-link {
+  font-family: var(--mono);
+  font-size: .82rem;
+  letter-spacing: .04em;
+  text-decoration: none;
+  color: var(--ink);
+  display: flex; align-items: center; gap: .35rem;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: .2rem;
+  transition: color .15s, border-color .15s;
+}
+.contact-link:hover { color: var(--rust); border-color: var(--rust); }
+
+/* ── footer ───────────────────────────────── */
+footer {
+  border-top: 1px solid var(--line);
+  padding: 1.5rem 0;
+}
+.footer-inner {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.footer-copy {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--muted);
+  letter-spacing: .04em;
+}
+
+/* ── reveal ───────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+}
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; opacity: 1; transform: none; }
+}
+
+/* ── mobile ───────────────────────────────── */
+@media (max-width: 640px) {
+  html { cursor: auto; }
+  #cursor { display: none; }
+  .project-row { grid-template-columns: 2.5rem 1fr auto; gap: .75rem; }
+  .nav-status { display: none; }
+  .nav-links { gap: 1rem; }
+  #proj-thumb { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- custom cursor -->
+<div id="cursor"></div>
+
+<!-- floating project thumbnail -->
+<div id="proj-thumb"><img id="proj-thumb-img" src="" alt=""></div>
+
+<!-- nav -->
+<nav>
+  <div class="wrap nav-inner">
+    <a class="nav-brand" href="#top">Hi, I'm Mihir!</a>
+    <div class="nav-right">
+      <span class="nav-status">Available for work</span>
+      <ul class="nav-links">
+        <li><a href="#work" data-hover>Work</a></li>
+        <li><a href="https://github.com/mihir-robotics" target="_blank" rel="noopener noreferrer" data-hover>GitHub ↗</a></li>
+        <li><a href="https://linkedin.com/in/mihir-s-kulkarni" target="_blank" rel="noopener noreferrer" data-hover>LinkedIn ↗</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- hero -->
+<section id="top" class="hero">
+  <div class="wrap">
+    <p class="hero-eyebrow">Robotics · Machine Learning</p>
+    <h1 class="hero-title">
+      Building<br>
+      <em>robots</em><br>
+      &amp;&nbsp;models.
+    </h1>
+    <div class="hero-subtitle-row reveal">
+      <p class="hero-bio">
+        I'm an engineer working at the intersection of <strong>ROS 2</strong>, <strong>embedded hardware</strong>, and <strong>cloud data pipelines</strong> — with <strong>machine learning</strong> for forecasting and perception on robots.
+      </p>
+      <a class="hero-cta" href="#work" data-hover>Selected work ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- marquee -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <!-- duplicated for seamless loop -->
+    <span class="marquee-item">ROS 2 Jazzy<span>·</span></span>
+    <span class="marquee-item">C++ / Python<span>·</span></span>
+    <span class="marquee-item">Embedded Systems<span>·</span></span>
+    <span class="marquee-item">Computer Vision<span>·</span></span>
+    <span class="marquee-item">Data Engineering<span>·</span></span>
+    <span class="marquee-item">BigQuery<span>·</span></span>
+    <span class="marquee-item">PySpark<span>·</span></span>
+    <span class="marquee-item">dbt<span>·</span></span>
+    <span class="marquee-item">AWS / Redshift<span>·</span></span>
+    <span class="marquee-item">Machine Learning<span>·</span></span>
+  </div>
+</div>
+
+<!-- projects -->
+<section id="work" class="wrap">
+    <div class="projects-head">
+    <span class="projects-label">Selected projects</span>
+    <span class="projects-count">09 works</span>
+  </div>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/ros2_pick_and_place"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/ros2_pick_and_place.gif"
+     data-hover>
+    <span class="proj-num">01</span>
+    <div class="proj-body">
+      <h2 class="proj-title">ros2_pick_and_place</h2>
+      <p class="proj-desc">ROS 2 pick-and-place with USB camera, ArUco detection, analytical IK, and serial-driven Arduino arm motion.</p>
+      <span class="proj-tag">ROS 2 · Computer Vision · C++</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/ros2_webots"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/ros2_webots.gif"
+     data-hover>
+    <span class="proj-num">02</span>
+    <div class="proj-body">
+      <h2 class="proj-title">ros2_webots</h2>
+      <p class="proj-desc">Autonomous robot control in Webots with real-time LIDAR obstacle avoidance in ROS 2 Jazzy.</p>
+      <span class="proj-tag">ROS 2 · Webots · LIDAR</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/ros2_gripper"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/ros2_gripper.gif"
+     data-hover>
+    <span class="proj-num">03</span>
+    <div class="proj-body">
+      <h2 class="proj-title">ros2_gripper</h2>
+      <p class="proj-desc">ROS 2 package to command a servo-based gripper over serial from Jazzy nodes.</p>
+      <span class="proj-tag">ROS 2 · Embedded · C++</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/custom-servo"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/custom-servo.png"
+     data-hover>
+    <span class="proj-num">04</span>
+    <div class="proj-body">
+      <h2 class="proj-title">custom-servo</h2>
+      <p class="proj-desc">Step-based, feedback-controlled Arduino servo library using an external potentiometer for true position on every update.</p>
+      <span class="proj-tag">Embedded · C++ · Arduino</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/datavault-modeling-dbt"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/datavault-modeling-dbt.png"
+     data-hover>
+    <span class="proj-num">05</span>
+    <div class="proj-body">
+      <h2 class="proj-title">datavault-modeling-dbt</h2>
+      <p class="proj-desc">Data Vault 2.0 pipeline with dbt and AutomateDV—from raw sources through business vault on BigQuery.</p>
+      <span class="proj-tag">dbt · BigQuery · Data Vault</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/aws-yahoo-finance-etl-pipeline"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/aws-yahoo-finance-etl-pipeline.png"
+     data-hover>
+    <span class="proj-num">06</span>
+    <div class="proj-body">
+      <h2 class="proj-title">aws-yahoo-finance-etl-pipeline</h2>
+      <p class="proj-desc">ELT pipeline fetching Yahoo Finance data into S3, loading Redshift Serverless, with Glue and QuickSight.</p>
+      <span class="proj-tag">AWS · Lambda · Redshift</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/pyspark-gcp-project"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/pyspark-gcp-project.png"
+     data-hover>
+    <span class="proj-num">07</span>
+    <div class="proj-body">
+      <h2 class="proj-title">pyspark-gcp-project</h2>
+      <p class="proj-desc">PySpark job on Dataproc reading from Cloud Storage and loading curated tables into BigQuery.</p>
+      <span class="proj-tag">PySpark · GCP · BigQuery</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/bigquery-views-performance-benchmark"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/bigquery-views-performance-benchmark.png"
+     data-hover>
+    <span class="proj-num">08</span>
+    <div class="proj-body">
+      <h2 class="proj-title">bigquery-views-performance-benchmark</h2>
+      <p class="proj-desc">Benchmarks logical views, materialized views, and table functions for cost and latency in BigQuery.</p>
+      <span class="proj-tag">BigQuery · SQL · Performance</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+  <a class="project-row reveal"
+     href="https://github.com/mihir-robotics/stock_prediction_model"
+     target="_blank" rel="noopener noreferrer"
+     data-thumb="assets/projects/stock_prediction_model.png"
+     data-hover>
+    <span class="proj-num">09</span>
+    <div class="proj-body">
+      <h2 class="proj-title">stock_prediction_model</h2>
+      <p class="proj-desc">LSTM model predicting stock price movement from NASDAQ history and market sentiment features.</p>
+      <span class="proj-tag">ML · LSTM · Time Series</span>
+    </div>
+    <span class="proj-arrow">↗</span>
+  </a>
+
+
+</section>
+
+<!-- stack -->
+<section class="stack">
+  <div class="wrap">
+    <p class="stack-label">Tech stack</p>
+    <div class="stack-pills">
+      <span class="pill">ROS 2</span>
+      <span class="pill">C++</span>
+      <span class="pill">Python</span>
+      <span class="pill">TensorFlow / Keras</span>
+      <span class="pill">OpenCV</span>
+      <span class="pill">PyTorch</span>
+      <span class="pill">BigQuery</span>
+      <span class="pill">PySpark</span>
+      <span class="pill">Google Cloud</span>
+      <span class="pill">AWS S3 + Redshift</span>
+      <span class="pill">dbt</span>
+    </div>
+  </div>
+</section>
+
+<!-- github languages -->
+<section class="github-lang" aria-labelledby="github-lang-label">
+  <div class="wrap">
+    <div class="github-lang-head">
+      <span class="projects-label" id="github-lang-label">Most used languages</span>
+      <a class="github-lang-link" href="https://github.com/mihir-robotics" target="_blank" rel="noopener noreferrer" data-hover>@mihir-robotics ↗</a>
+    </div>
+    <div class="github-lang-list reveal" id="github-lang-list">
+      <p class="github-lang-status" id="github-lang-status">Loading from GitHub…</p>
+    </div>
+  </div>
+</section>
+
+<!-- contact -->
+<section class="contact">
+  <div class="wrap">
+    <h2 class="contact-giant">
+      Let's<br><em>talk.</em>
+    </h2>
+    <div class="contact-links">
+      <a class="contact-link" href="https://linkedin.com/in/mihir-s-kulkarni" target="_blank" rel="noopener noreferrer" data-hover>LinkedIn ↗</a>
+      <a class="contact-link" href="https://github.com/mihir-robotics" target="_blank" rel="noopener noreferrer" data-hover>GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span class="footer-copy">© 2026 Mihir Kulkarni</span>
+    <span class="footer-copy">Made with curiosity and a lot of coffee!</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* ── cursor ──────────────────────────────── */
+  const cur = document.getElementById('cursor');
+  const CURSOR_LERP = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.85;
+  let mx = -100, my = -100, cx = -100, cy = -100;
+  let raf;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  function animCursor() {
+    cx += (mx - cx) * CURSOR_LERP;
+    cy += (my - cy) * CURSOR_LERP;
+    cur.style.left = cx + 'px';
+    cur.style.top  = cy + 'px';
+    raf = requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  document.querySelectorAll('[data-hover]').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+  });
+
+  /* ── floating project thumbnail ───────────── */
+  const thumb    = document.getElementById('proj-thumb');
+  const thumbImg = document.getElementById('proj-thumb-img');
+  let thumbX = -500, thumbY = -500;
+
+  document.querySelectorAll('.project-row').forEach(row => {
+    const src = row.dataset.thumb;
+    if (!src) return;
+
+    row.addEventListener('mouseenter', () => {
+      thumbImg.src = src;
+      thumb.classList.add('visible');
+      cur.classList.add('hover-img');
+    });
+    row.addEventListener('mouseleave', () => {
+      thumb.classList.remove('visible');
+      cur.classList.remove('hover-img');
+    });
+    row.addEventListener('mousemove', e => {
+      thumbX = e.clientX;
+      thumbY = e.clientY;
+      thumb.style.left = thumbX + 'px';
+      thumb.style.top  = thumbY + 'px';
+    });
+  });
+
+  /* ── github languages ─────────────────────── */
+  const GITHUB_USER = 'mihir-robotics';
+  const LANG_CACHE_KEY = 'portfolio-github-langs-v1';
+  const LANG_TOP = 6;
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function renderGitHubLanguages(entries, listEl) {
+    listEl.innerHTML = '';
+    if (!entries.length) {
+      listEl.innerHTML = '<p class="github-lang-status">No language data.</p>';
+      return;
+    }
+    const maxPct = entries[0].pct;
+    entries.forEach(({ name, pct }) => {
+      const row = document.createElement('div');
+      row.className = 'github-lang-row';
+      const frac = maxPct ? (pct / maxPct).toFixed(4) : '1';
+      row.innerHTML =
+        '<span class="github-lang-name">' + escapeHtml(name) + '</span>' +
+        '<div class="github-lang-bar" aria-hidden="true"><span style="--lang-frac:' + frac + '"></span></div>' +
+        '<span class="github-lang-pct">' + pct + '%</span>';
+      listEl.appendChild(row);
+    });
+
+    const barObserver = new IntersectionObserver(obsEntries => {
+      obsEntries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.querySelectorAll('.github-lang-row').forEach((row, i) => {
+          setTimeout(() => row.classList.add('in'), i * 60);
+        });
+        barObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.15 });
+    barObserver.observe(listEl);
+  }
+
+  async function loadGitHubLanguages() {
+    const listEl = document.getElementById('github-lang-list');
+    const statusEl = document.getElementById('github-lang-status');
+    if (!listEl || !statusEl) return;
+
+    try {
+      const cached = sessionStorage.getItem(LANG_CACHE_KEY);
+      if (cached) {
+        renderGitHubLanguages(JSON.parse(cached), listEl);
+        return;
+      }
+    } catch (_) { /* refetch */ }
+
+    const ghHeaders = { Accept: 'application/vnd.github+json' };
+    try {
+      const repos = [];
+      for (let page = 1; page <= 5; page++) {
+        const res = await fetch(
+          'https://api.github.com/users/' + GITHUB_USER + '/repos?per_page=100&page=' + page + '&type=owner',
+          { headers: ghHeaders }
+        );
+        if (!res.ok) throw new Error('repos');
+        const batch = await res.json();
+        if (!batch.length) break;
+        repos.push(...batch.filter(r => !r.fork));
+        if (batch.length < 100) break;
+      }
+
+      const totals = {};
+      await Promise.all(repos.map(async (r) => {
+        const res = await fetch(
+          'https://api.github.com/repos/' + GITHUB_USER + '/' + r.name + '/languages',
+          { headers: ghHeaders }
+        );
+        if (!res.ok) return;
+        const langs = await res.json();
+        Object.entries(langs).forEach(([lang, bytes]) => {
+          totals[lang] = (totals[lang] || 0) + bytes;
+        });
+      }));
+
+      const sum = Object.values(totals).reduce((s, n) => s + n, 0);
+      const entries = Object.entries(totals)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, LANG_TOP)
+        .map(([name, bytes]) => ({
+          name,
+          pct: sum ? Math.round((bytes / sum) * 100) : 0
+        }));
+
+      sessionStorage.setItem(LANG_CACHE_KEY, JSON.stringify(entries));
+      statusEl.remove();
+      renderGitHubLanguages(entries, listEl);
+    } catch {
+      statusEl.textContent = 'Language breakdown unavailable.';
+    }
+  }
+
+  loadGitHubLanguages();
+
+  /* ── scroll reveal ───────────────────────── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('in'), i * 55);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
+</script>
+
+</body>
+</html>
